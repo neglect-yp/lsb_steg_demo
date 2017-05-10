@@ -11,21 +11,22 @@ def lsb(filename, s):
         print("error: string is too long")
         sys.exit(1)
     
+    # from ascii string to bit array
     bits = []
     for c in s:
         binary = '{:08b}'.format(ord(c))
         for bit in binary:
             bits.append(int(bit))
 
+    # insert message into image
     i = 0
     for y in range(h):
         for x in range(w):
             r, g, b, a = img.getpixel((x, y))
+            r = r & ~1 # set LSB to 0
             if i < len(bits):
-                r = r & ~1 | bits[i]
+                r |= bits[i] # set LSB to bits[i]
                 i += 1
-            else:
-                r = r & ~1
             img.putpixel((x, y), (r, g, b, a))
 
     img.save("out.png")
